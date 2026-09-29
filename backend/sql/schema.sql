@@ -9,3 +9,5 @@ CREATE TABLE IF NOT EXISTS users (
   role ENUM('customer', 'admin') NOT NULL DEFAULT 'customer',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE users DROP COLUMN name;
