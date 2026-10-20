@@ -31,7 +31,14 @@ const notifyStatusListeners = () => {
 const TOKEN_KEY = 'chaceylon_auth_token';
 const USER_KEY = 'chaceylon_auth_user';
 
-export const getStoredToken = () => localStorage.getItem(TOKEN_KEY);
+export const getStoredToken = () => {
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (token === 'demo_token') {
+    localStorage.removeItem(TOKEN_KEY);
+    return null;
+  }
+  return token;
+};
 export const setStoredToken = (token) => {
   if (token) localStorage.setItem(TOKEN_KEY, token);
   else localStorage.removeItem(TOKEN_KEY);
@@ -40,7 +47,14 @@ export const setStoredToken = (token) => {
 export const getStoredUser = () => {
   try {
     const raw = localStorage.getItem(USER_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && (parsed.name === 'Kavindu Wijerathna' || parsed.email === 'customer@chaceylon.lk')) {
+      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+      return null;
+    }
+    return parsed;
   } catch (e) {
     return null;
   }
@@ -326,56 +340,19 @@ const INITIAL_PRODUCTS = [
   }
 ];
 
-const INITIAL_ORDERS = [
-  {
-    id: 101,
-    order_number: 'ORD-2026-8701',
-    user_id: 1,
-    total_amount: 3930.00,
-    status: 'delivered',
-    payment_method: 'cash_on_delivery',
-    payment_status: 'paid',
-    delivery_address: {
-      recipient_name: 'Kavindu Wijerathna',
-      phone: '0771234567',
-      address_line1: 'No 45, Temple Road',
-      city: 'Kandy',
-      district: 'Kandy'
-    },
-    items: [
-      { product_id: 1, name: 'Ceylon Single Estate Black Tea', quantity: 2, unit_price: 1250.00, image_url: '/images/ceylon-black-tea.jpg' },
-      { product_id: 2, name: 'Ceylon Organic Green Tea', quantity: 1, unit_price: 1430.00, image_url: '/images/ceylon-green-tea.jpg' }
-    ],
-    created_at: '2026-10-10T09:30:00Z'
-  },
-  {
-    id: 102,
-    order_number: 'ORD-2026-8702',
-    user_id: 1,
-    total_amount: 4530.00,
-    status: 'processing',
-    payment_method: 'cash_on_delivery',
-    payment_status: 'pending',
-    delivery_address: {
-      recipient_name: 'Kavindu Wijerathna',
-      phone: '0771234567',
-      address_line1: 'No 45, Temple Road',
-      city: 'Kandy',
-      district: 'Kandy'
-    },
-    items: [
-      { product_id: 3, name: 'Artisan Ceylon Spiced Chai Infusion', quantity: 1, unit_price: 1680.00, image_url: '/images/herbal_tea.png' },
-      { product_id: 4, name: 'Pure Moringa Leaf Extract', quantity: 1, unit_price: 2850.00, image_url: '/images/moringa.jpg' }
-    ],
-    created_at: '2026-10-12T14:15:00Z'
-  }
-];
+const INITIAL_ORDERS = [];
 
 // LocalStorage persistence for mock data
 const loadLocal = (key, fallback) => {
   try {
     const raw = localStorage.getItem(`chaceylon_mock_${key}`);
-    return raw ? JSON.parse(raw) : fallback;
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    if (key === 'orders' && Array.isArray(parsed)) {
+      // Filter out any dummy Kavindu orders
+      return parsed.filter((o) => o?.delivery_address?.recipient_name !== 'Kavindu Wijerathna');
+    }
+    return parsed;
   } catch (e) {
     return fallback;
   }
@@ -424,14 +401,16 @@ function handleMockFallback(endpoint, options = {}) {
 
   // POST /auth/login
   if (endpoint === '/auth/login' && method === 'POST') {
+    const mockUsers = loadLocal('users', []);
+    const found = mockUsers.find((u) => u.email?.toLowerCase() === body.email?.toLowerCase());
     const isAdmin = body.email.toLowerCase().includes('admin');
-    const user = {
-      id: isAdmin ? 99 : 1,
+    const user = found || {
+      id: isAdmin ? 99 : Date.now(),
       name: isAdmin ? 'Admin Manager' : (body.email.split('@')[0] || 'ChaCeylon Customer'),
       email: body.email,
       role: isAdmin ? 'admin' : 'customer'
     };
-    const token = 'mock_jwt_token_' + Date.now();
+    const token = 'jwt_token_' + Date.now();
     setStoredToken(token);
     setStoredUser(user);
     return { user, token };
@@ -439,13 +418,18 @@ function handleMockFallback(endpoint, options = {}) {
 
   // POST /auth/register
   if (endpoint === '/auth/register' && method === 'POST') {
+    const isAdmin = body.email.toLowerCase().includes('admin');
     const user = {
       id: Date.now(),
-      name: body.name || 'New Customer',
+      name: body.name || 'ChaCeylon Customer',
       email: body.email,
-      role: 'customer'
+      role: isAdmin ? 'admin' : 'customer'
     };
-    const token = 'mock_jwt_token_' + Date.now();
+    const token = 'jwt_token_' + Date.now();
+    const mockUsers = loadLocal('users', []);
+    const updatedUsers = [user, ...mockUsers.filter((u) => u.email?.toLowerCase() !== user.email?.toLowerCase())];
+    saveLocal('users', updatedUsers);
+
     setStoredToken(token);
     setStoredUser(user);
     return { user, token };
@@ -453,19 +437,19 @@ function handleMockFallback(endpoint, options = {}) {
 
   // GET /auth/me
   if (endpoint === '/auth/me') {
-    const user = getStoredUser() || {
-      id: 1,
-      name: 'ChaCeylon Customer',
-      email: 'customer@example.com',
-      role: 'customer'
-    };
+    const user = getStoredUser();
+    if (!user) {
+      const err = new Error('Not authenticated');
+      err.status = 401;
+      throw err;
+    }
     return { user };
   }
 
   // POST /orders
   if (endpoint === '/orders' && method === 'POST') {
     const newId = 100 + mockOrders.length + 1;
-    const orderNumber = `ORD-2026-${8700 + newId}`;
+    const orderNumber = `ORD-${Date.now().toString().slice(-6)}`;
     
     // Calculate total on server as requested by Integration Doc Section 7.5
     let calculatedTotal = 0;
@@ -482,20 +466,22 @@ function handleMockFallback(endpoint, options = {}) {
       };
     });
 
+    const currentUser = getStoredUser();
     const newOrder = {
       id: newId,
       order_number: orderNumber,
-      user_id: getStoredUser()?.id || 1,
+      user_id: currentUser?.id || Date.now(),
+      user_email: currentUser?.email || '',
       total_amount: calculatedTotal,
       status: 'pending',
       payment_method: body.payment_method || 'cash_on_delivery',
       payment_status: 'pending',
       delivery_address: body.delivery_address || {
-        recipient_name: 'Valued Customer',
-        phone: '0770000000',
-        address_line1: 'Colombo 07',
-        city: 'Colombo',
-        district: 'Colombo'
+        recipient_name: currentUser?.name || 'Customer',
+        phone: '',
+        address_line1: '',
+        city: '',
+        district: ''
       },
       items: enrichedItems,
       created_at: new Date().toISOString()
@@ -518,7 +504,12 @@ function handleMockFallback(endpoint, options = {}) {
 
   // GET /orders/my-orders
   if (endpoint === '/orders/my-orders') {
-    return { data: mockOrders };
+    const currentUser = getStoredUser();
+    if (!currentUser) return { data: [] };
+    const userOrders = mockOrders.filter(
+      (o) => o.user_id === currentUser.id || (currentUser.email && o.user_email === currentUser.email)
+    );
+    return { data: userOrders };
   }
 
   // GET /orders/:id

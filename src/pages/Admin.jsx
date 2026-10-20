@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import {
   getAdminProducts,
   createAdminProduct,
@@ -22,6 +24,7 @@ import {
 } from 'lucide-react';
 
 export default function Admin() {
+  const { user, isAdmin, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -152,6 +155,45 @@ export default function Admin() {
   const lowStockCount = products.filter((p) => p.stock_quantity <= 10 && p.is_active !== 0).length;
   const activeProductsCount = products.filter((p) => p.is_active !== 0).length;
 
+  if (!isAuthenticated) {
+    return (
+      <div className="admin-wrapper" style={{ padding: '80px 20px', textAlign: 'center' }}>
+        <div className="container" style={{ maxWidth: '500px', background: '#ffffff', padding: '40px 30px', borderRadius: '16px', border: '1px solid var(--border-color)', margin: '0 auto' }}>
+          <ShieldAlert size={48} color="var(--accent-gold)" style={{ margin: '0 auto 16px' }} />
+          <h2 style={{ color: 'var(--primary)', marginBottom: '8px' }}>Admin Authentication Required</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>
+            Please sign in with an administrator account to access product inventory and customer orders.
+          </p>
+          <Link to="/login" className="btn btn-primary" style={{ width: '100%' }}>
+            Sign In to Portal
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="admin-wrapper" style={{ padding: '80px 20px', textAlign: 'center' }}>
+        <div className="container" style={{ maxWidth: '520px', background: '#ffffff', padding: '40px 30px', borderRadius: '16px', border: '1px solid var(--border-color)', margin: '0 auto' }}>
+          <ShieldAlert size={48} color="#b45309" style={{ margin: '0 auto 16px' }} />
+          <h2 style={{ color: 'var(--primary)', marginBottom: '8px' }}>Administrator Access Required</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>
+            You are signed in as <strong>{user?.name}</strong> ({user?.email}), which is a customer account. Administrator credentials are required to modify products and manage store orders.
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <Link to="/" className="btn btn-primary">
+              Return to Store
+            </Link>
+            <Link to="/login" className="btn btn-outline">
+              Switch Account
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="admin-wrapper">
       <div className="container">
@@ -161,12 +203,12 @@ export default function Admin() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-gold)', marginBottom: '6px' }}>
               <ShieldAlert size={18} />
               <span style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                DevOps Group 87 Administrator Control
+                ChaCeylon Operations Management
               </span>
             </div>
-            <h1 style={{ color: '#ffffff', fontSize: '32px', margin: 0 }}>ChaCeylon Management Dashboard</h1>
+            <h1 style={{ color: '#ffffff', fontSize: '32px', margin: 0 }}>Administrator Portal</h1>
             <p style={{ color: '#cbd5e1', fontSize: '14px', margin: '6px 0 0' }}>
-              Connected to Express REST APIs: /api/admin/products & /api/admin/orders
+              Real-time tea catalogue inventory management & order dispatch fulfillment
             </p>
           </div>
 

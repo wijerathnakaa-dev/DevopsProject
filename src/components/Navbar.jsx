@@ -91,20 +91,11 @@ export default function Navbar() {
             <div
               className={`api-status-pill ${backendStatus.online ? 'online' : 'offline'}`}
               onClick={() => setShowStatusModal(true)}
-              title="Click to view REST API connection details & test /api/health"
+              title="REST API connection status"
             >
               <div className="api-status-dot" />
-              <span>{backendStatus.online ? 'Express Online' : 'Mock Demo'}</span>
+              <span>{backendStatus.online ? 'Live API' : 'Local Demo'}</span>
             </div>
-
-            {/* Role switch toggle for quick evaluation */}
-            <button
-              className="role-badge-btn"
-              onClick={toggleRole}
-              title="Click to toggle between Customer and Admin role for lab testing"
-            >
-              {isAdmin ? '🛡️ Admin' : '👤 Customer'}
-            </button>
 
             {/* Shopping Cart Button */}
             <Link to="/cart" className="cart-btn" aria-label="Shopping Cart">
@@ -113,14 +104,14 @@ export default function Navbar() {
             </Link>
 
             {/* User Account / Auth */}
-            {isAuthenticated ? (
+            {isAuthenticated && user ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Link to="/orders" className="user-menu-btn" title={`Signed in as ${user.name}`}>
                   <div className="user-avatar-initial">
                     {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                   </div>
-                  <span style={{ maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {user.name.split(' ')[0]}
+                  <span style={{ maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {user.name ? user.name.split(' ')[0] : 'Account'}
                   </span>
                 </Link>
                 <button
@@ -133,9 +124,14 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <Link to="/login" className="btn btn-primary btn-sm">
-                Login
-              </Link>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Link to="/login" className="btn btn-ghost btn-sm" style={{ fontWeight: 600 }}>
+                  Sign In
+                </Link>
+                <Link to="/register" className="btn btn-primary btn-sm">
+                  Register
+                </Link>
+              </div>
             )}
 
             {/* Mobile Hamburger Button */}

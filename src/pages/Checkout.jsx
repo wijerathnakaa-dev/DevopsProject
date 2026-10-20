@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -18,13 +18,19 @@ export default function Checkout() {
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Form state matching Section 7.5
-  const [recipientName, setRecipientName] = useState(user?.name || 'Kavindu Wijerathna');
-  const [phone, setPhone] = useState('0771234567');
-  const [addressLine1, setAddressLine1] = useState('14/2 Hill Crest Road');
-  const [city, setCity] = useState('Galle');
-  const [district, setDistrict] = useState('Galle');
+  // Form state
+  const [recipientName, setRecipientName] = useState(user?.name || '');
+  const [phone, setPhone] = useState('');
+  const [addressLine1, setAddressLine1] = useState('');
+  const [city, setCity] = useState('');
+  const [district, setDistrict] = useState('Colombo');
   const [paymentMethod, setPaymentMethod] = useState('cash_on_delivery');
+
+  useEffect(() => {
+    if (user?.name && !recipientName) {
+      setRecipientName(user.name);
+    }
+  }, [user]);
 
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -184,7 +190,7 @@ export default function Checkout() {
                 required
                 value={recipientName}
                 onChange={(e) => setRecipientName(e.target.value)}
-                placeholder="e.g. Kavindu Wijerathna"
+                placeholder="Enter full name"
               />
             </div>
 
@@ -195,7 +201,7 @@ export default function Checkout() {
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="0771234567"
+                placeholder="e.g. 077 123 4567"
               />
             </div>
 

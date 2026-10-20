@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getMyOrders } from '../services/api';
-import { Package, Calendar, Clock, MapPin, ArrowRight, ShieldCheck, RefreshCw } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { Package, Calendar, Clock, MapPin, ArrowRight, ShieldCheck, RefreshCw, LogIn } from 'lucide-react';
 
 export default function Orders() {
+  const { isAuthenticated, user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,8 +25,12 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (isAuthenticated) {
+      fetchOrders();
+    } else {
+      setLoading(false);
+    }
+  }, [isAuthenticated]);
 
   const getStatusBadge = (status) => {
     const s = (status || 'pending').toLowerCase();
@@ -47,14 +53,50 @@ export default function Orders() {
     ? orders
     : orders.filter((o) => (o.status || '').toLowerCase() === filterStatus);
 
+  if (!isAuthenticated) {
+    return (
+      <div className="orders-page-wrapper">
+        <div className="container" style={{ textAlign: 'center', padding: '80px 20px' }}>
+          <div style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'var(--primary-subtle)',
+            color: 'var(--primary)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 24px'
+          }}>
+            <LogIn size={40} />
+          </div>
+          <h2 style={{ fontSize: '30px', color: 'var(--primary)', marginBottom: '12px' }}>Sign in to View Your Orders</h2>
+          <p style={{ color: 'var(--text-muted)', maxWidth: '460px', margin: '0 auto 30px', fontSize: '15px' }}>
+            Please log in or create a ChaCeylon account to view your past orders, delivery details, and order tracking.
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <Link to="/login" className="btn btn-primary btn-lg">
+              Sign In
+            </Link>
+            <Link to="/register" className="btn btn-outline btn-lg">
+              Create Account
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="orders-page-wrapper">
       <div className="container">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <h1 style={{ fontSize: '34px', color: 'var(--primary)', marginBottom: '8px' }}>Customer Order History</h1>
+            <h1 style={{ fontSize: '34px', color: 'var(--primary)', marginBottom: '8px' }}>
+              {user?.name ? `${user.name.split(' ')[0]}'s Orders` : 'Order History'}
+            </h1>
             <p style={{ color: 'var(--text-muted)' }}>
-              Track your authentic Ceylon tea orders (GET /api/orders/my-orders)
+              Track your authentic Ceylon tea orders and delivery updates
             </p>
           </div>
 
@@ -90,7 +132,7 @@ export default function Orders() {
         {loading ? (
           <div style={{ textAlign: 'center', padding: '70px 0' }}>
             <div style={{ fontSize: '32px', marginBottom: '16px' }} className="animate-spin">🍃</div>
-            <h3 style={{ color: 'var(--primary)' }}>Retrieving Orders from MySQL Database...</h3>
+            <h3 style={{ color: 'var(--primary)' }}>Loading your tea orders...</h3>
           </div>
         ) : error ? (
           <div style={{ background: '#fee2e2', color: '#991b1b', padding: '24px', borderRadius: '12px' }}>
@@ -101,7 +143,7 @@ export default function Orders() {
             <Package size={48} color="var(--accent-gold)" style={{ margin: '0 auto 16px' }} />
             <h3 style={{ color: 'var(--primary)', marginBottom: '8px' }}>No Orders Found</h3>
             <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>
-              You don't have any orders with status "{filterStatus}".
+              {orders.length === 0 ? "You haven't placed any orders yet." : `You don't have any orders with status "${filterStatus}".`}
             </p>
             <Link to="/products" className="btn btn-primary">
               Browse Teas & Place Order

@@ -12,20 +12,15 @@ import {
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => getStoredUser() || {
-    id: 1,
-    name: 'Kavindu Wijerathna',
-    email: 'customer@chaceylon.lk',
-    role: 'customer'
-  });
-  const [token, setToken] = useState(() => getStoredToken() || 'demo_token');
+  const [user, setUser] = useState(() => getStoredUser() || null);
+  const [token, setToken] = useState(() => getStoredToken() || null);
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(null);
 
   // Sync state if user changes in localStorage
   useEffect(() => {
     const existing = getStoredUser();
-    if (existing) setUser(existing);
+    setUser(existing || null);
   }, []);
 
   const login = async (email, password) => {
@@ -70,16 +65,11 @@ export function AuthProvider({ children }) {
     setToken(null);
   };
 
-  // Quick switch role for testing Admin vs Customer in lab evaluation
+  // Switch role between customer and admin if user is authenticated
   const toggleRole = () => {
-    if (!user) {
-      const demoAdmin = { id: 99, name: 'Admin Manager', email: 'admin@chaceylon.lk', role: 'admin' };
-      setUser(demoAdmin);
-      setStoredUser(demoAdmin);
-      return;
-    }
+    if (!user) return;
     const newRole = user.role === 'admin' ? 'customer' : 'admin';
-    const updated = { ...user, role: newRole, name: newRole === 'admin' ? 'Admin Manager' : 'ChaCeylon Customer' };
+    const updated = { ...user, role: newRole };
     setUser(updated);
     setStoredUser(updated);
   };

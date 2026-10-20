@@ -1,13 +1,27 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { AlertCircle, Lock, Mail, ArrowRight } from "lucide-react";
+import {
+  AlertCircle,
+  Lock,
+  Mail,
+  ArrowRight,
+  ArrowLeft,
+  Eye,
+  EyeOff,
+  Sparkles,
+  ShieldCheck,
+  Leaf,
+  Truck,
+  Award
+} from "lucide-react";
 import "../style.css";
 
 function Login() {
-  const [email, setEmail] = useState("customer@example.com");
-  const [password, setPassword] = useState("password123");
-  const { login, loading, authError, setAuthError } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, loading, authError } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -20,48 +34,110 @@ function Login() {
     }
   };
 
-  const handleFastFill = (role) => {
-    if (role === "admin") {
-      setEmail("admin@chaceylon.lk");
-      setPassword("admin123");
-    } else {
-      setEmail("customer@example.com");
-      setPassword("password123");
-    }
-  };
-
   return (
-    <div className="login-page">
-      {/* Left Side: Brand Imagery */}
-      <div className="login-image">
-        <div className="image-overlay">
-          <img
-            src="/images/logo.png"
-            alt="Cha Ceylon Logo"
-            style={{ height: "70px", width: "auto", marginBottom: "16px", filter: "brightness(0) invert(1)" }}
-            onError={(e) => { e.target.style.display = "none"; }}
-          />
-          <h1>ChaCeylon</h1>
-          <p>
-            Discover the authentic taste of single-origin orthodox Sri Lankan tea and herbal elixirs.
-          </p>
-          <div style={{ marginTop: "24px", fontSize: "14px", color: "#d1ddd6", borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "16px" }}>
-            DevOps Engineering Group 87 • REST API Architecture
+    <div className="auth-page-wrapper">
+      {/* Left Visual Story Showcase */}
+      <div className="auth-showcase">
+        <div className="auth-showcase-glow" />
+
+        <div className="auth-showcase-content">
+          {/* Top Bar with Back Link */}
+          <div className="auth-showcase-top">
+            <Link to="/" className="auth-back-btn">
+              <ArrowLeft size={16} /> Return to Store
+            </Link>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <img
+                src="/images/logo.png"
+                alt="ChaCeylon Crest"
+                style={{ height: "38px", width: "auto", filter: "brightness(0) invert(1)" }}
+                onError={(e) => { e.target.style.display = "none"; }}
+              />
+            </div>
+          </div>
+
+          {/* Central Hero Headline & Story */}
+          <div>
+            <div className="auth-brand-badge">
+              <Sparkles size={14} /> Highland Single-Origin Ceylon
+            </div>
+
+            <h1 className="auth-hero-heading">
+              The Soul of Ceylon. <br />
+              <span className="gold-text">Poured for the Connoisseur.</span>
+            </h1>
+
+            <p className="auth-hero-lead">
+              Welcome back to ChaCeylon. Step into the misty hills of Nuwara Eliya, where century-old orthodox tea rituals meet modern vacuum-sealed freshness.
+            </p>
+
+            {/* Engaging Feature Cards */}
+            <div className="auth-perks-grid">
+              <div className="auth-perk-card">
+                <div className="auth-perk-icon-wrap">
+                  <Leaf size={18} />
+                </div>
+                <div>
+                  <div className="auth-perk-title">Single Estate Orthodox Leaves</div>
+                  <p className="auth-perk-desc">Whole leaf hand-plucked from historic Sri Lankan highland peaks</p>
+                </div>
+              </div>
+
+              <div className="auth-perk-card">
+                <div className="auth-perk-icon-wrap">
+                  <Award size={18} />
+                </div>
+                <div>
+                  <div className="auth-perk-title">Lion Logo Quality Certified</div>
+                  <p className="auth-perk-desc">Adheres strictly to Sri Lanka Tea Board orthodox purity benchmarks</p>
+                </div>
+              </div>
+
+              <div className="auth-perk-card">
+                <div className="auth-perk-icon-wrap">
+                  <Truck size={18} />
+                </div>
+                <div>
+                  <div className="auth-perk-title">Hermetic Freshness & Free Delivery</div>
+                  <p className="auth-perk-desc">Direct factory dispatch with free delivery on orders over LKR 5,000</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Tea Note */}
+          <div className="auth-showcase-quote">
+            “Sun-withered in highland mist and fired over aromatic botanical wood. Every cup delivers profound serenity.”
           </div>
         </div>
       </div>
 
-      {/* Right Side: Form */}
-      <div className="login-section">
-        <div className="login-box">
-          <div className="login-logo">
-            🍃
+      {/* Right Interactive Sign-In Card */}
+      <div className="auth-form-side">
+        <div className="auth-form-card">
+          <div className="auth-form-header">
+            <div className="auth-logo-badge">
+              <img
+                src="/images/logo.png"
+                alt="ChaCeylon Elephant Crest"
+                style={{ height: "42px", width: "auto" }}
+                onError={(e) => {
+                  e.target.style.display = "none";
+                }}
+              />
+            </div>
+
+            <h2 className="auth-form-title">Welcome Back</h2>
+            <p className="auth-form-subtitle">
+              Sign in to your ChaCeylon account to manage your orders & discover limited harvests.
+            </p>
           </div>
 
-          <h2>Welcome Back!</h2>
-          <p className="login-description">
-            Sign in to your ChaCeylon customer or admin account
-          </p>
+          {/* Quick Tab Switcher */}
+          <div className="auth-tab-switch">
+            <span className="auth-tab-btn active">Sign In</span>
+            <Link to="/register" className="auth-tab-btn">Create Account</Link>
+          </div>
 
           {authError && (
             <div style={{
@@ -81,75 +157,80 @@ function Login() {
             </div>
           )}
 
-          {/* Fast-fill buttons for evaluator */}
-          <div style={{ marginBottom: "20px", background: "var(--primary-subtle)", padding: "12px", borderRadius: "10px" }}>
-            <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--primary)", display: "block", marginBottom: "8px", textTransform: "uppercase" }}>
-              Quick Demo Fill:
-            </span>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <button
-                type="button"
-                className="btn btn-outline btn-sm"
-                style={{ flex: 1, fontSize: "12px", padding: "6px" }}
-                onClick={() => handleFastFill("customer")}
-              >
-                👤 Customer
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline btn-sm"
-                style={{ flex: 1, fontSize: "12px", padding: "6px" }}
-                onClick={() => handleFastFill("admin")}
-              >
-                🛡️ Admin
-              </button>
-            </div>
-          </div>
-
           <form onSubmit={handleLogin}>
-            <div className="input-group">
+            <div className="auth-input-group">
               <label>Email Address</label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <div className="auth-input-wrap">
+                <Mail size={18} className="auth-input-icon" />
+                <input
+                  type="email"
+                  className="auth-text-input"
+                  placeholder="Enter your email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
             </div>
 
-            <div className="input-group">
+            <div className="auth-input-group">
               <label>Password</label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <div className="auth-input-wrap">
+                <Lock size={18} className="auth-input-icon" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="auth-text-input with-toggle"
+                  placeholder="Enter your account password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="auth-toggle-pwd-btn"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
 
-            <div className="login-options">
+            <div className="auth-options-row">
               <label>
-                <input type="checkbox" defaultChecked /> Remember me
+                <input type="checkbox" defaultChecked style={{ accentColor: "var(--primary)" }} /> Remember me
               </label>
-              <span style={{ color: "var(--text-muted)", fontSize: "12px" }}>
-                POST /api/auth/login
-              </span>
+              <Link to="/products" style={{ color: "var(--accent-gold-dark)", fontWeight: 600 }}>
+                Explore Teas First →
+              </Link>
             </div>
 
             <button
               type="submit"
-              className="login-button"
+              className="auth-submit-btn"
               disabled={loading}
             >
-              {loading ? "Authenticating with Express..." : "Sign In to ChaCeylon"}
+              {loading ? (
+                <>Signing in...</>
+              ) : (
+                <>
+                  Sign In to ChaCeylon <ArrowRight size={17} />
+                </>
+              )}
             </button>
           </form>
 
-          <p className="register-text">
-            Don't have an account? <Link to="/register">Create Account</Link>
-          </p>
+          {/* Trust Footer */}
+          <div className="auth-trust-footer">
+            <div className="auth-trust-item">
+              <ShieldCheck size={14} color="var(--primary)" />
+              <span>256-bit Encrypted</span>
+            </div>
+            <div className="auth-trust-item">
+              <Award size={14} color="var(--accent-gold)" />
+              <span>100% Pure Ceylon Guarantee</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

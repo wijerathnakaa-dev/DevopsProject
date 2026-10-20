@@ -170,7 +170,7 @@ export default function Products() {
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <div style={{ fontSize: '32px', marginBottom: '16px' }} className="animate-spin">🍃</div>
             <h3 style={{ color: 'var(--primary)', marginBottom: '6px' }}>Fetching Pure Ceylon Harvest</h3>
-            <p style={{ color: 'var(--text-muted)' }}>Querying REST endpoint GET /api/products...</p>
+            <p style={{ color: 'var(--text-muted)' }}>Loading signature single-origin Ceylon teas...</p>
           </div>
         ) : error ? (
           <div style={{
