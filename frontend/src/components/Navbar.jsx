@@ -7,7 +7,7 @@ import { subscribeBackendStatus } from '../services/api';
 import ApiStatusModal from './ApiStatusModal';
 
 export default function Navbar() {
-  const { user, isAuthenticated, isAdmin, logout, toggleRole } = useAuth();
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const { totalCount } = useCart();
   const navigate = useNavigate();
 
@@ -63,13 +63,13 @@ export default function Navbar() {
             </li>
             <li>
               <NavLink to="/products" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-                Tea Collection
+                Products
               </NavLink>
             </li>
             <li>
-              <a href="/#factory" className="nav-link">
-                Factory & Craft
-              </a>
+              <NavLink to="/about" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+                About & Contact
+              </NavLink>
             </li>
             <li>
               <NavLink to="/orders" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>

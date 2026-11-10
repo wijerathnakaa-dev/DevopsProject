@@ -32,8 +32,8 @@ exports.register = async (req, res) => {
       return res.status(409).json({ error: { message: 'An account with this email already exists' } });
     }
 
-    // Role detection (admin email or default customer)
-    const role = cleanEmail.includes('admin') ? 'admin' : 'customer';
+    // Public sign-ups are always customers. Admins are created only via seed data / database.
+    const role = 'customer';
     const passwordHash = await bcrypt.hash(password, 10);
 
     const [result] = await pool.query(

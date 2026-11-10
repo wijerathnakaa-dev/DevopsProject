@@ -1,7 +1,7 @@
 // Integration Test Suite for ChaCeylon Express Backend
 const http = require('http');
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = process.env.API_BASE_URL || 'http://localhost:5000/api';
 
 function makeRequest(url, method = 'GET', data = null, headers = {}) {
   return new Promise((resolve, reject) => {
@@ -175,6 +175,13 @@ async function runTests() {
   }
 
   console.log(`\n=== Test Summary: ${passed} Passed, ${failed} Failed ===\n`);
+  return failed;
 }
 
-runTests();
+// Exit with a non-zero code when any test fails so CI pipelines go red
+runTests()
+  .then((failed) => process.exit(failed > 0 ? 1 : 0))
+  .catch((err) => {
+    console.error('Test runner crashed:', err);
+    process.exit(1);
+  });

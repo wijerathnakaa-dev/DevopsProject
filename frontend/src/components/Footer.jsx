@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Leaf, ShieldCheck, Award, Heart, Server } from 'lucide-react';
+import { Leaf, ShieldCheck, Award, Heart } from 'lucide-react';
+import company, { phoneHref, whatsappHref, emailHref } from '../config/company';
 
 export default function Footer() {
   return (
@@ -12,7 +13,7 @@ export default function Footer() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
               <img
                 src="/images/logo.png"
-                alt="ChaCeylon Elephant Logo"
+                alt={`${company.shortName} Logo`}
                 style={{ height: '48px', width: 'auto', filter: 'brightness(0) invert(1)' }}
                 onError={(e) => { e.target.style.display = 'none'; }}
               />
@@ -23,14 +24,13 @@ export default function Footer() {
                 </span>
               </div>
             </div>
-            <p>
-              Direct from misty Ceylon highlands to your teacup. We bring you handpicked orthodox single-origin teas, traditional Ayurvedic botanical blends, and laboratory-extracted organic Moringa elixirs.
-            </p>
+            <p>{company.summary}</p>
+            <p style={{ color: 'var(--accent-gold)', fontSize: '13px', letterSpacing: '0.05em' }}>{company.tagline}</p>
             <div style={{ display: 'flex', gap: '14px', color: 'var(--accent-gold)' }}>
-              <span title="Lion Logo Authentic Quality"><Award size={20} /></span>
-              <span title="100% Organically Cultivated"><Leaf size={20} /></span>
-              <span title="Pure Ceylon Elephant Seal"><ShieldCheck size={20} /></span>
-              <span title="Ethically Sourced & Packed"><Heart size={20} /></span>
+              <span title="Export-Quality Standards"><Award size={20} /></span>
+              <span title="Natural Sri Lankan Ingredients"><Leaf size={20} /></span>
+              <span title="Hygienic Manufacturing"><ShieldCheck size={20} /></span>
+              <span title="Supporting Local Agriculture"><Heart size={20} /></span>
             </div>
           </div>
 
@@ -53,19 +53,23 @@ export default function Footer() {
               <li><Link to="/orders">Order Tracking</Link></li>
               <li><Link to="/products">Fresh Ceylon Harvests</Link></li>
               <li><Link to="/cart">Shopping Basket</Link></li>
-              <li><a href="#factory">Factory & Hygiene Standards</a></li>
+              <li><Link to="/about">About {company.shortName}</Link></li>
               <li><Link to="/login">My Account</Link></li>
             </ul>
           </div>
 
           {/* Heritage & Contact */}
           <div className="footer-col">
-            <h4>Contact & Estate</h4>
+            <h4>Get In Touch</h4>
             <ul className="footer-links">
-              <li style={{ color: '#9ab3a5' }}>Estates: Nuwara Eliya & Galle, Sri Lanka</li>
-              <li style={{ color: '#9ab3a5' }}>Email: info@chaceylon.lk</li>
-              <li style={{ color: '#9ab3a5' }}>Hotline: +94 (11) 234-5678</li>
-              <li style={{ color: '#9ab3a5' }}>Hours: Mon – Sat, 8:30 AM – 6:00 PM</li>
+              <li style={{ color: '#9ab3a5' }}>{company.address}</li>
+              <li><a href={emailHref}>{company.email}</a></li>
+              {phoneHref && <li><a href={phoneHref}>{company.phone}</a></li>}
+              {whatsappHref && <li><a href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp us</a></li>}
+              {company.hours.map((h) => (
+                <li key={h.days} style={{ color: '#9ab3a5' }}>{h.days}: {h.time}</li>
+              ))}
+              <li><Link to="/about#contact">Contact page</Link></li>
             </ul>
           </div>
         </div>
@@ -73,12 +77,12 @@ export default function Footer() {
         {/* Bottom Credits */}
         <div className="footer-bottom">
           <div>
-            © {new Date().getFullYear()} ChaCeylon (Nature's Blend). All Rights Reserved. Single-Origin Pure Ceylon Tea.
+            © {new Date().getFullYear()} {company.name}. All Rights Reserved.
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             <span>Islandwide Delivery</span>
             <span>•</span>
-            <span>Authentic Ceylon Purity</span>
+            <span>Made in Sri Lanka</span>
           </div>
         </div>
       </div>

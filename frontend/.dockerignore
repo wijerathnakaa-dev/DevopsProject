@@ -4,3 +4,6 @@ dist
 .gitignore
 Dockerfile
 npm-debug.log
+.env
+.env.*
+!.env.example

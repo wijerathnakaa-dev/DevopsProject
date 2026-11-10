@@ -1,12 +1,13 @@
 /**
  * ChaCeylon API Integration Service
  * Follows the Frontend–Backend Integration and REST API Specification (Group 87)
- * Connects to Express backend at VITE_API_URL (default: http://localhost:5000/api)
- * Includes graceful mock fallback so the application works seamlessly both standalone
- * and when connected to your partner's live Express + MySQL server.
+ * Connects to Express backend at VITE_API_URL (default: /api, proxied by Vite in dev and Nginx in Docker).
+ * Mock data is used ONLY when VITE_ENABLE_MOCK=true (offline UI demos). By default a backend
+ * outage is shown to the user instead of being hidden behind fake data.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const MOCK_ENABLED = import.meta.env.VITE_ENABLE_MOCK === 'true';
 
 // Connection state tracking
 let backendStatus = {
@@ -101,8 +102,13 @@ async function request(endpoint, options = {}) {
       backendStatus.checked = true;
       backendStatus.error = 'Backend server at ' + API_BASE_URL + ' is unreachable.';
       notifyStatusListeners();
-      console.warn(`[ChaCeylon API] Backend unreachable at ${API_BASE_URL}. Using fallback mock data.`);
-      return handleMockFallback(endpoint, options);
+      if (MOCK_ENABLED) {
+        console.warn(`[ChaCeylon API] Backend unreachable at ${API_BASE_URL}. Using mock data (VITE_ENABLE_MOCK=true).`);
+        return handleMockFallback(endpoint, options);
+      }
+      const offlineErr = new Error('Cannot reach the ChaCeylon server. Please try again shortly.');
+      offlineErr.status = 0;
+      throw offlineErr;
     }
     throw err;
   }

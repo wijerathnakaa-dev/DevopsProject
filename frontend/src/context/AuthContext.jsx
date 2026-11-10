@@ -5,8 +5,7 @@ import {
   getCurrentUser,
   logoutUser,
   getStoredUser,
-  getStoredToken,
-  setStoredUser
+  getStoredToken
 } from '../services/api';
 
 const AuthContext = createContext();
@@ -65,15 +64,6 @@ export function AuthProvider({ children }) {
     setToken(null);
   };
 
-  // Switch role between customer and admin if user is authenticated
-  const toggleRole = () => {
-    if (!user) return;
-    const newRole = user.role === 'admin' ? 'customer' : 'admin';
-    const updated = { ...user, role: newRole };
-    setUser(updated);
-    setStoredUser(updated);
-  };
-
   const isAuthenticated = Boolean(user);
   const isAdmin = user?.role === 'admin';
 
@@ -89,8 +79,7 @@ export function AuthProvider({ children }) {
         setAuthError,
         login,
         register,
-        logout,
-        toggleRole
+        logout
       }}
     >
       {children}

@@ -1,38 +1,58 @@
+const crypto = require('crypto');
 const pool = require('../config/db');
 
+// Collision-safe order number, e.g. ORD-LZ4K2Q-9F3A
+const generateOrderNumber = () =>
+  `ORD-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
+
 exports.createOrder = async (req, res) => {
-  const connection = await pool.getConnection();
-  try {
-    const { items, delivery_address, payment_method } = req.body;
+  const { items, delivery_address, payment_method } = req.body;
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ error: { message: 'Order must contain at least one item' } });
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ error: { message: 'Order must contain at least one item' } });
+  }
+
+  // Merge duplicate lines for the same product so stock is checked against the real total
+  const quantities = new Map();
+  for (const item of items) {
+    const productId = parseInt(item.product_id, 10);
+    const qty = parseInt(item.quantity, 10);
+    if (!productId || !qty || qty < 1) {
+      return res.status(400).json({ error: { message: 'Each item needs a valid product_id and a quantity of at least 1' } });
     }
+    quantities.set(productId, (quantities.get(productId) || 0) + qty);
+  }
 
-    // Extract product IDs
-    const productIds = items.map((i) => i.product_id);
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    // Lock the product rows so two simultaneous orders cannot both buy the last unit
+    const productIds = [...quantities.keys()];
     const [dbProducts] = await connection.query(
-      `SELECT id, name, price, stock_quantity, image_url FROM products WHERE id IN (?)`,
+      `SELECT id, name, price, stock_quantity, image_url FROM products
+       WHERE id IN (?) AND is_active = 1 FOR UPDATE`,
       [productIds]
     );
 
     const productMap = new Map();
     dbProducts.forEach((p) => productMap.set(p.id, p));
 
-    // Validate stock and compute server total
     let totalAmount = 0;
     const enrichedItems = [];
 
-    for (const item of items) {
-      const prod = productMap.get(item.product_id);
+    for (const [productId, qty] of quantities) {
+      const prod = productMap.get(productId);
       if (!prod) {
+        await connection.rollback();
         return res.status(400).json({
-          error: { message: `Product ID ${item.product_id} was not found in our catalog` }
+          error: { message: `Product ID ${productId} was not found in our catalog` }
         });
       }
 
-      const qty = parseInt(item.quantity, 10) || 1;
       if (prod.stock_quantity < qty) {
+        await connection.rollback();
         return res.status(400).json({
           error: { message: `Insufficient inventory for "${prod.name}". Available: ${prod.stock_quantity}, Requested: ${qty}` }
         });
@@ -50,13 +70,10 @@ exports.createOrder = async (req, res) => {
       });
     }
 
-    // Determine user info
-    const userId = req.user ? req.user.id : null;
-    const userEmail = req.user ? req.user.email : (delivery_address?.email || 'customer@chaceylon.lk');
-    const orderNumber = `ORD-${Date.now().toString().slice(-6)}`;
-
-    // Start Transaction
-    await connection.beginTransaction();
+    // Orders always belong to the logged-in user (route is protected)
+    const userId = req.user.id;
+    const userEmail = req.user.email;
+    const orderNumber = generateOrderNumber();
 
     const [orderResult] = await connection.query(
       `INSERT INTO orders (order_number, user_id, user_email, total_amount, status, payment_method, payment_status, delivery_address)
@@ -104,11 +121,13 @@ exports.createOrder = async (req, res) => {
 
     res.status(201).json({ data: createdOrder });
   } catch (err) {
-    await connection.rollback();
+    if (connection) {
+      try { await connection.rollback(); } catch (_) { /* connection already broken */ }
+    }
     console.error('[CreateOrder Error]:', err);
     res.status(500).json({ error: { message: 'Order processing failed due to database error' } });
   } finally {
-    connection.release();
+    if (connection) connection.release();
   }
 };
 

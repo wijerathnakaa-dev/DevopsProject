@@ -10,8 +10,18 @@ const adminRoutes = require('./routes/adminRoutes');
 const app = express();
 
 // Middlewares
+// Only allow known frontend origins (comma-separated list in CORS_ORIGINS)
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://localhost')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 app.use(cors({
-  origin: true,
+  origin: (origin, callback) => {
+    // Allow non-browser clients (curl, health checks, tests) that send no Origin header
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(null, false);
+  },
   credentials: true
 }));
 app.use(express.json());
@@ -19,15 +29,18 @@ app.use(express.json());
 // Health check handler function
 const healthHandler = async (req, res) => {
   let dbStatus = 'disconnected';
+  let healthy = false;
   try {
     await pool.query('SELECT 1');
     dbStatus = 'connected';
+    healthy = true;
   } catch (err) {
     dbStatus = 'unreachable: ' + err.message;
   }
 
-  res.json({
-    status: 'ok',
+  // 503 lets Docker / CI / monitoring tools detect that the service is not working
+  res.status(healthy ? 200 : 503).json({
+    status: healthy ? 'ok' : 'error',
     service: 'ChaCeylon Ceylon Tea Platform API',
     database: dbStatus,
     timestamp: new Date().toISOString()

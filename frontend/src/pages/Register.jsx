@@ -74,16 +74,16 @@ function Register() {
           {/* Central Hero Headline & Story */}
           <div>
             <div className="auth-brand-badge">
-              <Sparkles size={14} /> The Royal Ceylon Estate Club
+              <Sparkles size={14} /> ChaCeylon Manufactures
             </div>
 
             <h1 className="auth-hero-heading">
-              Pure Ceylon Heritage. <br />
+              Natural Sri Lankan Goodness. <br />
               <span className="gold-text">Delivered to Your Doorstep.</span>
             </h1>
 
             <p className="auth-hero-lead">
-              Create your ChaCeylon account to enjoy fast islandwide ordering, direct estate harvest reserve allocations, and real-time package dispatch tracking.
+              Create your ChaCeylon account to enjoy fast islandwide ordering of our natural Sri Lankan products and real-time order tracking.
             </p>
 
             {/* Engaging Feature Cards */}
@@ -93,8 +93,8 @@ function Register() {
                   <Leaf size={18} />
                 </div>
                 <div>
-                  <div className="auth-perk-title">Direct Highland Single Estate</div>
-                  <p className="auth-perk-desc">Authentic hand-plucked harvests from Nuwara Eliya & Galle hills</p>
+                  <div className="auth-perk-title">Direct From the Manufacturer</div>
+                  <p className="auth-perk-desc">Made by ChaCeylon Manufactures in Vijithapura, Anuradhapura</p>
                 </div>
               </div>
 
@@ -103,8 +103,8 @@ function Register() {
                   <Award size={18} />
                 </div>
                 <div>
-                  <div className="auth-perk-title">100% Lion Seal Authenticity</div>
-                  <p className="auth-perk-desc">Certified pure Ceylon tea leaves free of artificial flavoring or chemicals</p>
+                  <div className="auth-perk-title">Export-Quality Manufacturing</div>
+                  <p className="auth-perk-desc">Hygienic, controlled production methods aligned with export market standards</p>
                 </div>
               </div>
 
@@ -122,7 +122,7 @@ function Register() {
 
           {/* Bottom Tea Note */}
           <div className="auth-showcase-quote">
-            “From unopened velvety silver buds to Ayurvedic spiced chai elixirs, experience Ceylon tea at its purest state.”
+            “Inspired by Sri Lanka’s rich agricultural and herbal heritage.”
           </div>
         </div>
       </div>

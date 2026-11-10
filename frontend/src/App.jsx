@@ -14,6 +14,7 @@ import Orders from './pages/Orders';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import About from './pages/About';
 
 function Layout() {
   const location = useLocation();
@@ -27,6 +28,7 @@ function Layout() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/about" element={<About />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders" element={<Orders />} />

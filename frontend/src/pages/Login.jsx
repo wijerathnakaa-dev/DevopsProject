@@ -59,16 +59,16 @@ function Login() {
           {/* Central Hero Headline & Story */}
           <div>
             <div className="auth-brand-badge">
-              <Sparkles size={14} /> Highland Single-Origin Ceylon
+              <Sparkles size={14} /> Premium Herbal Export Brand
             </div>
 
             <h1 className="auth-hero-heading">
-              The Soul of Ceylon. <br />
-              <span className="gold-text">Poured for the Connoisseur.</span>
+              Nature's Blend <br />
+              <span className="gold-text">for Modern Living.</span>
             </h1>
 
             <p className="auth-hero-lead">
-              Welcome back to ChaCeylon. Step into the misty hills of Nuwara Eliya, where century-old orthodox tea rituals meet modern vacuum-sealed freshness.
+              Welcome back to ChaCeylon Manufactures — natural food, herbal and beverage products made in Sri Lanka with traditional ingredients and export-quality standards.
             </p>
 
             {/* Engaging Feature Cards */}
@@ -78,8 +78,8 @@ function Login() {
                   <Leaf size={18} />
                 </div>
                 <div>
-                  <div className="auth-perk-title">Single Estate Orthodox Leaves</div>
-                  <p className="auth-perk-desc">Whole leaf hand-plucked from historic Sri Lankan highland peaks</p>
+                  <div className="auth-perk-title">Quality Sri Lankan Ingredients</div>
+                  <p className="auth-perk-desc">Carefully selected herbs, spices, fruits and natural ingredients</p>
                 </div>
               </div>
 
@@ -88,8 +88,8 @@ function Login() {
                   <Award size={18} />
                 </div>
                 <div>
-                  <div className="auth-perk-title">Lion Logo Quality Certified</div>
-                  <p className="auth-perk-desc">Adheres strictly to Sri Lanka Tea Board orthodox purity benchmarks</p>
+                  <div className="auth-perk-title">Export-Quality Standards</div>
+                  <p className="auth-perk-desc">Manufactured for both local and international markets</p>
                 </div>
               </div>
 
@@ -98,7 +98,7 @@ function Login() {
                   <Truck size={18} />
                 </div>
                 <div>
-                  <div className="auth-perk-title">Hermetic Freshness & Free Delivery</div>
+                  <div className="auth-perk-title">Freshness-Sealed & Free Delivery</div>
                   <p className="auth-perk-desc">Direct factory dispatch with free delivery on orders over LKR 5,000</p>
                 </div>
               </div>
@@ -107,7 +107,7 @@ function Login() {
 
           {/* Bottom Tea Note */}
           <div className="auth-showcase-quote">
-            “Sun-withered in highland mist and fired over aromatic botanical wood. Every cup delivers profound serenity.”
+            “Natural • Healthy • Traditional • Trusted”
           </div>
         </div>
       </div>

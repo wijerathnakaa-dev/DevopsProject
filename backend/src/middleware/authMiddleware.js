@@ -1,6 +1,10 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'chaceylon_tea_super_secret_jwt_key_2026';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is not set. Copy backend/.env.example to backend/.env and set a strong secret.');
+}
 
 exports.protect = (req, res, next) => {
   const authHeader = req.headers.authorization;

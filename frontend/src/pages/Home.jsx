@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getProducts } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
+import company from '../config/company';
 import {
   Sparkles,
   ArrowRight,
@@ -47,39 +48,39 @@ export default function Home() {
         <div className="container hero-grid">
           <div>
             <div className="hero-badge">
-              <Sparkles size={16} /> Handcrafted Single-Origin Ceylon
+              <Sparkles size={16} /> {company.badge}
             </div>
 
             <h1 className="hero-title">
-              The Soul of Ceylon. <br />
-              <span className="accent">Nature's Pristine Blend.</span>
+              Nature's Blend <br />
+              <span className="accent">for Modern Living.</span>
             </h1>
 
             <p className="hero-description">
-              Savor authentic Sri Lankan single-estate orthodox teas, time-honored Ayurvedic herbal tonics, and cold-extracted organic Moringa elixirs — freshly processed and sealed at our state-of-the-art facility.
+              {company.heroSubtitle}. Manufacturing Sri Lankan food, beverages, spices, herbal products and natural ingredient solutions for local and global markets.
             </p>
 
             <div className="hero-cta-group">
               <Link to="/products" className="btn btn-accent btn-lg">
                 Explore Tea Collection <ArrowRight size={18} />
               </Link>
-              <a href="#factory" className="btn btn-outline btn-lg" style={{ color: '#ffffff', borderColor: 'rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.08)' }}>
-                Our Factory Craft
-              </a>
+              <Link to="/about" className="btn btn-outline btn-lg" style={{ color: '#ffffff', borderColor: 'rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.08)' }}>
+                About {company.shortName}
+              </Link>
             </div>
 
             <div className="hero-stats">
               <div className="hero-stat-item">
-                <h3>100%</h3>
-                <p>Pure Single Origin</p>
+                <h3>7</h3>
+                <p>Product Ranges</p>
               </div>
               <div className="hero-stat-item">
-                <h3>46+</h3>
-                <p>Natural Antioxidants</p>
+                <h3>Export</h3>
+                <p>Quality Standards</p>
               </div>
               <div className="hero-stat-item">
-                <h3>Nuwara Eliya</h3>
-                <p>High Grown Harvest</p>
+                <h3>Anuradhapura</h3>
+                <p>Sri Lankan Manufacturer</p>
               </div>
             </div>
           </div>
@@ -99,8 +100,8 @@ export default function Home() {
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
                 <div>
-                  <h4>ChaCeylon Nature's Blend</h4>
-                  <p>Certified pure Ceylon leaf with whole spices & herbs</p>
+                  <h4>{company.name}</h4>
+                  <p>{company.tagline}</p>
                 </div>
               </div>
             </div>
@@ -114,16 +115,16 @@ export default function Home() {
           <div className="trust-item">
             <div className="trust-icon-box"><Leaf size={24} /></div>
             <div className="trust-text">
-              <h4>Single-Origin Harvest</h4>
-              <p>Hand-plucked from historic Nuwara Eliya & Dimbula estates</p>
+              <h4>{company.strengths[0].title}</h4>
+              <p>Carefully selected Sri Lankan herbs, spices, fruits and natural ingredients</p>
             </div>
           </div>
 
           <div className="trust-item">
             <div className="trust-icon-box"><ShieldCheck size={24} /></div>
             <div className="trust-text">
-              <h4>Laboratory Certified</h4>
-              <p>Pure whole leaves with zero artificial additives</p>
+              <h4>{company.strengths[1].title}</h4>
+              <p>Hygienic manufacturing practices and controlled production methods</p>
             </div>
           </div>
 
@@ -138,8 +139,8 @@ export default function Home() {
           <div className="trust-item">
             <div className="trust-icon-box"><Clock size={24} /></div>
             <div className="trust-text">
-              <h4>Airtight Freshness</h4>
-              <p>Hermetically sealed immediately after artisan firing</p>
+              <h4>{company.strengths[2].title}</h4>
+              <p>Developed for both local and international market requirements</p>
             </div>
           </div>
         </div>
@@ -187,27 +188,27 @@ export default function Home() {
           <div className="factory-image-wrapper">
             <img
               src="/images/factory.png"
-              alt="Cha Ceylon State of the Art Packaging and Processing Plant"
+              alt={`${company.name} manufacturing facility`}
             />
             <div className="factory-image-badge">
-              🏭 ChaCeylon Modern Packaging Plant
+              🏭 {company.name}, Vijithapura
             </div>
           </div>
 
           <div className="factory-content">
             <span className="section-eyebrow">Quality & Hygiene Standards</span>
-            <h2>From Ceylon Mountain Hills to Pure Sealed Packaging</h2>
+            <h2>From Sri Lankan Farms to Quality Packaging</h2>
             <p className="lead">
-              Our automated, temperature-controlled facility guarantees that the natural volatile aroma oils, medicinal antioxidants, and delicate polyphenols are locked in every package.
+              We combine traditional Sri Lankan ingredients with modern food processing and manufacturing methods to create reliable, high-quality products for local and international markets.
             </p>
 
             <div className="factory-features-list">
               <div className="factory-feature-item">
                 <div className="feature-check-icon"><CheckCircle2 size={16} /></div>
                 <div>
-                  <strong>Precision Atmosphere-Controlled Sealing:</strong>
+                  <strong>Trusted Ingredient Sourcing:</strong>
                   <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>
-                    Continuous inert gas flush sealing preserves leaf vibrancy and flavor bouquet for up to 24 months.
+                    Carefully selected herbs, spices, grains, fruits, and natural ingredients sourced from trusted Sri Lankan suppliers.
                   </p>
                 </div>
               </div>
@@ -215,9 +216,9 @@ export default function Home() {
               <div className="factory-feature-item">
                 <div className="feature-check-icon"><CheckCircle2 size={16} /></div>
                 <div>
-                  <strong>Pharmaceutical Grade Cleanliness:</strong>
+                  <strong>Freshness-Preserving Packaging:</strong>
                   <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>
-                    Full gowning and HEPA filtration rooms ensure every tea bag and tin is 100% dust and contamination free.
+                    Packaging designed to preserve freshness, quality, and product integrity.
                   </p>
                 </div>
               </div>
@@ -225,9 +226,9 @@ export default function Home() {
               <div className="factory-feature-item">
                 <div className="feature-check-icon"><CheckCircle2 size={16} /></div>
                 <div>
-                  <strong>Authentic Elephant Motif Guarantee:</strong>
+                  <strong>Export-Aligned Standards:</strong>
                   <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>
-                    Every unit carrying the ChaCeylon Nature's Blend seal adheres to Sri Lanka Tea Board orthodox purity benchmarks.
+                    Manufacturing practices aligned with local and export market expectations, with ongoing product development and improvement.
                   </p>
                 </div>
               </div>

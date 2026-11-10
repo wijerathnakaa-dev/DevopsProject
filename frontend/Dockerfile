@@ -1,33 +1,26 @@
 # Stage 1: Build the React application
 FROM node:22-alpine AS build
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files
+# API base URL is baked in at build time (docker-compose passes /api)
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=$VITE_API_URL
+
+# Install dependencies (npm ci = exact versions from package-lock.json)
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install
-
-# Copy the project files
 COPY . .
-
-# Build the React application
 RUN npm run build
 
 
-# Stage 2: Run the application using Nginx
+# Stage 2: Serve the static build with Nginx
 FROM nginx:alpine
 
-# Copy custom Nginx configuration for client-side routing
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Copy the production build to Nginx
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Expose port 80
 EXPOSE 80
 
-# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
