@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getProducts, getCategories } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
-import { Search, Filter, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,11 +33,13 @@ export default function Products() {
     loadCategories();
   }, []);
 
-  // Sync category from URL search params
-  useEffect(() => {
-    const cat = searchParams.get('category_id') || '';
-    setSelectedCategory(cat);
-  }, [searchParams]);
+  // Sync category from URL search params (adjust state during render, no effect needed)
+  const categoryParam = searchParams.get('category_id') || '';
+  const [prevCategoryParam, setPrevCategoryParam] = useState(categoryParam);
+  if (categoryParam !== prevCategoryParam) {
+    setPrevCategoryParam(categoryParam);
+    setSelectedCategory(categoryParam);
+  }
 
   // Load products based on filters
   useEffect(() => {

@@ -1,8 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 import {
   loginUser,
   registerUser,
-  getCurrentUser,
   logoutUser,
   getStoredUser,
   getStoredToken
@@ -15,12 +14,6 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => getStoredToken() || null);
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(null);
-
-  // Sync state if user changes in localStorage
-  useEffect(() => {
-    const existing = getStoredUser();
-    setUser(existing || null);
-  }, []);
 
   const login = async (email, password) => {
     setLoading(true);
@@ -57,7 +50,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await logoutUser();
-    } catch (e) {
+    } catch {
       // ignore
     }
     setUser(null);

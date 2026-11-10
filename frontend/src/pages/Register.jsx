@@ -44,7 +44,7 @@ function Register() {
     try {
       await register(name, email, password);
       navigate("/");
-    } catch (err) {
+    } catch {
       // Handled by context
     }
   };

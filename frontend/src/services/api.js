@@ -56,7 +56,7 @@ export const getStoredUser = () => {
       return null;
     }
     return parsed;
-  } catch (e) {
+  } catch {
     return null;
   }
 };
@@ -179,7 +179,7 @@ export const getCurrentUser = async () => {
 export const logoutUser = async () => {
   try {
     await request('/auth/logout', { method: 'POST' });
-  } catch (e) {
+  } catch {
     // Ignore logout error if offline
   } finally {
     setStoredToken(null);
@@ -359,7 +359,7 @@ const loadLocal = (key, fallback) => {
       return parsed.filter((o) => o?.delivery_address?.recipient_name !== 'Kavindu Wijerathna');
     }
     return parsed;
-  } catch (e) {
+  } catch {
     return fallback;
   }
 };

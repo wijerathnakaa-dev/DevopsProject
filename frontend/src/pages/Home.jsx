@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getProducts } from '../services/api';
 import ProductCard from '../components/ProductCard';
@@ -11,10 +11,7 @@ import {
   Leaf,
   Clock,
   Truck,
-  CheckCircle2,
-  Heart,
-  Droplets,
-  PackageCheck
+  CheckCircle2
 } from 'lucide-react';
 
 export default function Home() {

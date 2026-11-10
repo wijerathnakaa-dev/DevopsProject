@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -14,13 +14,8 @@ import {
   Plus,
   Edit2,
   Trash2,
-  DollarSign,
-  Package,
-  Layers,
-  AlertTriangle,
   RefreshCw,
-  X,
-  Check
+  X
 } from 'lucide-react';
 
 export default function Admin() {
@@ -61,7 +56,16 @@ export default function Admin() {
   };
 
   useEffect(() => {
-    loadData();
+    let active = true;
+    Promise.all([getAdminProducts(), getAdminOrders()])
+      .then(([prodRes, orderRes]) => {
+        if (!active) return;
+        setProducts(prodRes.data || []);
+        setOrders(orderRes.data || []);
+      })
+      .catch((err) => console.error('Failed to load admin data', err))
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, []);
 
   const showNotice = (msg) => {

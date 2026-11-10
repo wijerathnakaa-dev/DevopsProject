@@ -1,5 +1,4 @@
-import React from 'react';
-import { ShoppingBag, Eye, Star } from 'lucide-react';
+import { ShoppingBag, Eye } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 export default function ProductCard({ product, onQuickView }) {

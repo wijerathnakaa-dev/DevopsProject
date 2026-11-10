@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Mail, Phone, Clock, Target, Eye, CheckCircle2, MessageCircle, ArrowRight } from 'lucide-react';
 import company, { phoneHref, whatsappHref, emailHref } from '../config/company';

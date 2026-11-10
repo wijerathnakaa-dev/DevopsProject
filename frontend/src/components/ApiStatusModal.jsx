@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { checkHealth, subscribeBackendStatus } from '../services/api';
-import { Server, CheckCircle2, AlertCircle, RefreshCw, X, ExternalLink, Code2 } from 'lucide-react';
+import { Server, CheckCircle2, AlertCircle, RefreshCw, X } from 'lucide-react';
 
 export default function ApiStatusModal({ isOpen, onClose }) {
   const [status, setStatus] = useState({ checked: false, online: false, url: '', error: null });

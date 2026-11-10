@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getMyOrders } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { Package, Calendar, Clock, MapPin, ArrowRight, ShieldCheck, RefreshCw, LogIn } from 'lucide-react';
+import { Package, Calendar, MapPin, ArrowRight, RefreshCw, LogIn } from 'lucide-react';
 
 export default function Orders() {
   const { isAuthenticated, user } = useAuth();
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(isAuthenticated);
   const [error, setError] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
 
@@ -25,11 +25,13 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchOrders();
-    } else {
-      setLoading(false);
-    }
+    if (!isAuthenticated) return;
+    let active = true;
+    getMyOrders()
+      .then((res) => { if (active) setOrders(res.data || []); })
+      .catch((err) => { if (active) setError(err.message || 'Failed to load order history.'); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, [isAuthenticated]);
 
   const getStatusBadge = (status) => {
@@ -152,13 +154,15 @@ export default function Orders() {
         ) : (
           <div>
             {filteredOrders.map((order) => {
-              const formattedDate = new Date(order.created_at || Date.now()).toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              });
+              const formattedDate = order.created_at
+                ? new Date(order.created_at).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })
+                : 'N/A';
 
               return (
                 <div key={order.id} className="order-history-card">

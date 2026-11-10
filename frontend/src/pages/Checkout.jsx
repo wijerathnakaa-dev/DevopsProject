@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -25,12 +25,6 @@ export default function Checkout() {
   const [city, setCity] = useState('');
   const [district, setDistrict] = useState('Colombo');
   const [paymentMethod, setPaymentMethod] = useState('cash_on_delivery');
-
-  useEffect(() => {
-    if (user?.name && !recipientName) {
-      setRecipientName(user.name);
-    }
-  }, [user]);
 
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);

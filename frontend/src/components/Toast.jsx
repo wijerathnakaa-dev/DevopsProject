@@ -1,4 +1,3 @@
-import React from 'react';
 import { useCart } from '../context/CartContext';
 import { CheckCircle2 } from 'lucide-react';
 

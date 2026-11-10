@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Leaf, ShieldCheck, Award, Heart } from 'lucide-react';
 import company, { phoneHref, whatsappHref, emailHref } from '../config/company';

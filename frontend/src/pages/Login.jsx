@@ -29,7 +29,7 @@ function Login() {
     try {
       await login(email, password);
       navigate("/");
-    } catch (err) {
+    } catch {
       // authError is set in context
     }
   };
