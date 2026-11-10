@@ -107,6 +107,62 @@ INSERT INTO products (id, name, description, price, currency, stock_quantity, im
   'Caffeine Free',
   4.70,
   '120g Kraft Bag'
+),
+(
+  7,
+  'Ceylon Cinnamon & Clove Herbal Infusion',
+  'Aromatic Ceylon cinnamon and whole cloves blended into a warming, naturally caffeine-free herbal infusion.',
+  1320.00,
+  'LKR',
+  26,
+  '/images/herbal_tea.png',
+  3,
+  1,
+  'Spiced Blend',
+  4.80,
+  '100g Pouch'
+),
+(
+  8,
+  'Ceylon Highland Breakfast Black Tea',
+  'A full-bodied orthodox black tea with a bright, brisk finish, crafted for a satisfying everyday cup.',
+  1350.00,
+  'LKR',
+  28,
+  '/images/ceylon-black-tea.jpg',
+  1,
+  1,
+  'Daily Classic',
+  4.80,
+  '250g Pouch'
+),
+(
+  9,
+  'Sri Lankan Moringa Leaf Powder',
+  'Finely milled Sri Lankan moringa leaves with a mild, earthy flavour for smoothies, soups, and other recipes.',
+  1650.00,
+  'LKR',
+  20,
+  '/images/moringa.jpg',
+  4,
+  1,
+  'Plant Based',
+  4.70,
+  '100g Pouch'
+),
+(
+  10,
+  'Ceylon Green Tea with Lemongrass',
+  'Light Ceylon green tea paired with fragrant lemongrass for a fresh, citrusy cup.',
+  1550.00,
+  'LKR',
+  16,
+  '/images/ceylon-green-tea.jpg',
+  2,
+  1,
+  'Fresh & Floral',
+  4.80,
+  '100g Pouch'
 )
 ON DUPLICATE KEY UPDATE
   name=VALUES(name),

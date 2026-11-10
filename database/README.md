@@ -17,7 +17,7 @@
 
 2. **`seed.sql`**:
    - 5 tea categories
-   - 6 signature Ceylon tea & herbal elixir items with high-resolution imagery and LKR pricing
+   - 10 Ceylon tea, herbal infusion, and moringa products with imagery and LKR pricing
    - Default Administrator account:
      - **Email:** `admin@chaceylon.lk`
      - **Password:** `admin123`
