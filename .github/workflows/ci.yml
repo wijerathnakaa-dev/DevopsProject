@@ -116,10 +116,19 @@ jobs:
       - name: Build and start the full stack
         run: docker compose up --build -d --wait --wait-timeout 180
 
-      - name: Smoke test through Nginx
-        run: |
-          curl -sf http://localhost/api/health
-          curl -sf http://localhost/api/products | head -c 300
+     - name: Smoke test through Nginx
+  run: |
+    echo "Testing backend health through frontend Nginx..."
+
+    curl --retry 10 --retry-delay 3 --retry-connrefused -f \
+      http://localhost:8080/api/health
+
+    echo "Testing products API..."
+
+    curl -f http://localhost:8080/api/products | head -c 300
+
+    echo "Docker smoke tests passed!"
+
 
       - name: Show container logs on failure
         if: failure()
