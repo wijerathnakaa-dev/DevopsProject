@@ -95,13 +95,14 @@ jobs:
       - name: Build
         run: npm run build
 
-  docker:
+    docker:
     name: Docker - build and smoke test
     runs-on: ubuntu-latest
     needs: [backend, frontend]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Create CI environment file
         run: |
@@ -113,8 +114,26 @@ jobs:
           JWT_SECRET=ci_only_jwt_secret_not_used_anywhere_else
           ENV
 
-      - name: Build and start the full stack
+      - name: Build and start full application
         run: docker compose up --build -d --wait --wait-timeout 180
+
+      - name: Check frontend
+        run: curl -f http://localhost:8080/
+
+      - name: Check backend API through Nginx
+        run: curl -f http://localhost:8080/api/health
+
+      - name: Check products API
+        run: curl -f http://localhost:8080/api/products
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop application
+        if: always()
+        run: docker compose down -v
+      run: docker compose up --build -d --wait --wait-timeout 180
 
      - name: Smoke test through Nginx
   run: |
