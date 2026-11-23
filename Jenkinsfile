@@ -77,13 +77,16 @@ stages {
         }
     }
 
-    stage('Docker Compose Validation') {
-        steps {
-            sh '''
-                docker compose config -q
-            '''
-        }
+   stage('Docker Compose Validation') {
+    steps {
+        sh '''
+            DB_PASSWORD=ci_test_password \
+            MYSQL_ROOT_PASSWORD=ci_test_root_password \
+            JWT_SECRET=ci_test_jwt_secret \
+            docker compose config -q
+        '''
     }
+}
 
     stage('Docker Image Build') {
         steps {
